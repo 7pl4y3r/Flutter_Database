@@ -32,7 +32,7 @@ class DataBaseHelper {
   }
 
   onCreateFun(Database db, int version) async {
-    await db.execute('CREATE TABLE $tableName ($col0 PRIMARY KEY AUTOINCREMENT, $col1 TEXT, $col2 TEXT)');
+    await db.execute('CREATE TABLE $tableName ($col0 INTEGER PRIMARY KEY AUTOINCREMENT, $col1 TEXT, $col2 TEXT)');
   }
 
   Future<List<Contact>> getContacts() async {
@@ -61,7 +61,25 @@ class DataBaseHelper {
     await db_connection.transaction((transaction) async {
       return await transaction.rawInsert(query);
     });
+   }
 
-  }
+   updateContact(Contact contact) async {
+
+    var db_connection = await db;
+    String query = 'UPDATE $tableName SET $col1=\'${contact.name}\',$col2=\'${contact.phone}\'WHERE $col0=${contact.id}';
+    await db_connection.transaction((transaction) async {
+      return await transaction.rawQuery(query);
+    });
+   }
+
+   deleteContact(Contact contact) async {
+
+    var db_conntection = await db;
+    String query = 'DELETE FROM $tableName WHERE $col0=${contact.id}';
+    await db_conntection.transaction((transaction) async {
+      return await transaction.rawQuery(query);
+    });
+
+   }
 
 }
